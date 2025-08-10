@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using DG.Tweening;
 
 public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
@@ -43,9 +44,9 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     }
     public void OnDrag(PointerEventData eventData)
     {
-    Vector3 screenPoint = Input.mousePosition;
-    screenPoint.z = 10f; // odległość od kamery
-    transform.position = Camera.main.ScreenToWorldPoint(screenPoint); 
+        Vector3 screenPoint = Input.mousePosition;
+        screenPoint.z = 10f; // odległość od kamery
+        transform.position = Camera.main.ScreenToWorldPoint(screenPoint); 
     }
 
 
@@ -59,8 +60,6 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
         foreach (var zone in snapZones)
         {
-            //if (snap == null || snap.isOccupied) continue; // sprawdź, czy strefa jest zajęta, jeśli tak, to pomiń
-
             float dist = Vector2.Distance(transform.position, zone.transform.position);
             if (dist < snapDistance)
             {
@@ -68,28 +67,37 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             }
         }
 
-        
-
-
-        if (closestZone != null)
+        if (closestZone != null) 
         {
-            
             SnapZone snap = closestZone.GetComponent<SnapZone>();
             if (!snap.isOccupied)
             {
-                usedZone = closestZone; // zapamiętaj używaną strefę
                 snap.isOccupied = true; // oznacz strefę jako zajętą
                 Debug.Log("Is occupied");
-                transform.position = usedZone.transform.position;
-                if (usedZone.transform == correctZone) //Sprawdzenie czy obiekt trafił do poprawnej strefy
+
+                //transform.position = closestZone.transform.position; // Przenieś obiekt do strefy
+                if (closestZone.transform == correctZone) //Sprawdzenie czy obiekt trafił do poprawnej strefy
                 {
                     inCorrectZone = true;
                     GameManager.Instance.AddPoint(); // Dodaj punkt
+
+                    transform.DOMove(closestZone.transform.position, 0.35f)
+                        .SetEase(Ease.OutQuad)
+                        .OnComplete(() =>
+                        {
+                            transform.DOScale(originalScale * 1.1f, 0.05f)
+                                .OnComplete(() => transform.DOScale(originalScale, 0.1f));
+                            transform.DORotate(new Vector3(0, 0, Random.Range(-5f, 5f)), 0.15f)
+                                .OnComplete(() => transform.DORotate(Vector3.zero, 0.15f));
+                        });
                 }
+                usedZone = closestZone; // Zapamiętaj strefę, w której jest obiekt
             }
             else
             {
-                transform.position = originalPosition;
+                transform.DOMove(closestZone.transform.position, 0.3f)
+                        .SetEase(Ease.OutQuad);
+                //transform.position = originalPosition; // Jeśli strefa jest zajęta, przywróć oryginalną pozycję
             }
 
         }
