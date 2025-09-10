@@ -3,24 +3,35 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
+    
     private int score = 0;
+    private int totalItems = 0;
 
-    private void Awake()
+    void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        Instance = this;
+        totalItems = GameObject.FindGameObjectsWithTag("DraggableItem").Length;
     }
 
     public void AddPoint()
     {
         score++;
-        Debug.Log("Punkty: " + score);
     }
-
+    
     public void SubstractPoint()
     {
-        if (score > 0) score--;
-        Debug.Log("Punkty: " + score);
+        score = Mathf.Max(0, score - 1);
+    }
+    
+    // NOWE: Gettery dla LevelManager
+    public int GetCurrentScore() { return score; }
+    public int GetTotalItems() { return totalItems; }
+    public void SetScore(int newScore) { score = newScore; }
+    
+    // NOWE: Progress tracking dla retention
+    public float GetProgressPercentage()
+    {
+        return totalItems > 0 ? (float)score / totalItems : 0f;
     }
 }
 

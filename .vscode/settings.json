@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Restock Ritual.sln"
+    "dotnet.defaultSolution": "RestockRitual.sln"
 }

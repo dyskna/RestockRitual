@@ -7,6 +7,10 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public Transform correctZone;
     public float snapDistance = 0f; // jak blisko musi być do snapowania
 
+    [Header("Minimal Juice (Optional)")]
+    public AudioClip snapSound; 
+    public bool useHaptics = true;
+
     private CanvasGroup canvasGroup;
     private Vector3 originalScale;
     private Vector3 originalPosition;
@@ -25,7 +29,8 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         canvasGroup.blocksRaycasts = false; // żeby móc wykryć drop na inne obiekty
         originalScale = transform.localScale;
         originalPosition = transform.position;
-        transform.localScale = originalScale * 1.2f;
+        transform.DOScale(originalScale * 1.2f, 0.2f).SetEase(Ease.OutQuad);
+        if (useHaptics) Handheld.Vibrate();
         if (inCorrectZone) // Jeśli obiekt był w poprawnej strefie, to odejmij punkt
         {
             inCorrectZone = false;
@@ -49,7 +54,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         transform.position = Camera.main.ScreenToWorldPoint(screenPoint); 
     }
 
-
+    [System.Obsolete]
     public void OnEndDrag(PointerEventData eventData)
     {
         canvasGroup.blocksRaycasts = true;
@@ -80,23 +85,19 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                 {
                     inCorrectZone = true;
                     GameManager.Instance.AddPoint(); // Dodaj punkt
-
-                    transform.DOMove(closestZone.transform.position, 0.35f)
-                        .SetEase(Ease.OutQuad)
-                        .OnComplete(() =>
-                        {
-                            transform.DOScale(originalScale * 1.1f, 0.05f)
-                                .OnComplete(() => transform.DOScale(originalScale, 0.1f));
-                            transform.DORotate(new Vector3(0, 0, Random.Range(-5f, 5f)), 0.15f)
-                                .OnComplete(() => transform.DORotate(Vector3.zero, 0.15f));
-                        });
                 }
+                transform.DOMove(closestZone.transform.position, 0.35f)
+                        .SetEase(Ease.OutBack);
+                if (snapSound != null && AudioSource.FindObjectOfType<AudioSource>())
+                {
+                    AudioSource.FindObjectOfType<AudioSource>().PlayOneShot(snapSound);
+                }
+                if (useHaptics) Handheld.Vibrate();
                 usedZone = closestZone; // Zapamiętaj strefę, w której jest obiekt
             }
             else
             {
-                transform.DOMove(closestZone.transform.position, 0.3f)
-                        .SetEase(Ease.OutQuad);
+                transform.DOMove(originalPosition, 0.3f).SetEase(Ease.OutQuad);
                 //transform.position = originalPosition; // Jeśli strefa jest zajęta, przywróć oryginalną pozycję
             }
 
