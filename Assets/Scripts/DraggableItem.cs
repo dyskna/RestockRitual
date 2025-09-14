@@ -30,7 +30,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         originalScale = transform.localScale;
         originalPosition = transform.position;
         transform.DOScale(originalScale * 1.2f, 0.2f).SetEase(Ease.OutQuad);
-        if (useHaptics) Handheld.Vibrate();
+        //if (useHaptics) Handheld.Vibrate();
         if (inCorrectZone) // Jeśli obiekt był w poprawnej strefie, to odejmij punkt
         {
             inCorrectZone = false;
@@ -84,7 +84,8 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                 if (closestZone.transform == correctZone) //Sprawdzenie czy obiekt trafił do poprawnej strefy
                 {
                     inCorrectZone = true;
-                    GameManager.Instance.AddPoint(); // Dodaj punkt
+                    GameManager.Instance.AddPoint();
+                    if (useHaptics) Handheld.Vibrate(); // Dodaj punkt
                 }
                 transform.DOMove(closestZone.transform.position, 0.35f)
                         .SetEase(Ease.OutBack);
@@ -92,7 +93,7 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                 {
                     AudioSource.FindObjectOfType<AudioSource>().PlayOneShot(snapSound);
                 }
-                if (useHaptics) Handheld.Vibrate();
+                
                 usedZone = closestZone; // Zapamiętaj strefę, w której jest obiekt
             }
             else
