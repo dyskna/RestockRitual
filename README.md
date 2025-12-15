@@ -5,8 +5,6 @@ Gracz ma jedno zadanie: **idealnie ułożyć przedmioty w szufladzie** zanim sko
 
 Projekt inspirowany jest trendem z TikToka **restock**, czyli satysfakcjonującym uzupełnianiem i porządkowaniem szuflad i pojemników.  
 
-### Wizja
-Gra ma łączyć **relaks płynący z porządkowania** z lekkim **wyzwaniem czasowym**, tworząc proste, ale satysfakcjonujące doświadczenie.  
 
 ---
 
@@ -19,5 +17,10 @@ The first level takes place in the **kitchen drawer** – full of knives, cutler
 
 The project is inspired by the TikTok **restock trend**, where people create satisfying videos of refilling and organizing drawers, shelves, and containers.  
 
-### Vision
-Restock Ritual aims to combine the **relaxing satisfaction of organizing** with a light **time-based challenge**, delivering a simple but engaging gameplay experience.  
+<img width="394" height="858" alt="image" src="https://github.com/user-attachments/assets/650a6506-5681-4558-b6ad-70b5a8944e5f" />
+
+
+
+<img width="394" height="853" alt="image" src="https://github.com/user-attachments/assets/4d8da6c7-5aaa-423f-849a-daf34c23ff58" />
+
+<img width="394" height="875" alt="image" src="https://github.com/user-attachments/assets/7b6cf02e-2c99-4f68-9d18-c1b9a0cd3922" />
